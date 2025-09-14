@@ -1,0 +1,17 @@
+.idea
+/venv/
+/env/
+
+pycache/
+*.pyc
+
+.env
+.env.local
+.env.*.local
+
+.idea/
+.vscode/
+
+*.log
+
+output/

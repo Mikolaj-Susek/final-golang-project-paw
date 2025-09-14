@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package ocr;
+
+option go_package = "github.com/example/golang-postgres-crud/ocr";
+
+service OcrService {
+  rpc PerformOcr(OcrRequest) returns (OcrResponse) {}
+}
+
+message OcrRequest {
+  bytes image_data = 1;
+}
+
+message OcrResponse {
+  string extracted_text = 1;
+}
