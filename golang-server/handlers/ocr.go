@@ -19,13 +19,13 @@ const (
 func PerformOcr(c *gin.Context) {
 	file, err := c.FormFile("image")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Nie udało się pobrać pliku obrazu"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to get image file"})
 		return
 	}
 
 	fileContent, err := file.Open()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Nie udało się otworzyć pliku"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to open file"})
 		return
 	}
 	defer fileContent.Close()
@@ -33,14 +33,14 @@ func PerformOcr(c *gin.Context) {
 	imageBytes := make([]byte, file.Size)
 	_, err = fileContent.Read(imageBytes)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Nie udało się odczytać zawartości pliku"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file content"})
 		return
 	}
 
 	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
-		log.Printf("Błąd połączenia z serwerem gRPC: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Nie można połączyć się z serwerem OCR"})
+		log.Printf("Error connecting to gRPC server: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not connect to OCR server"})
 		return
 	}
 	defer conn.Close()
@@ -53,8 +53,8 @@ func PerformOcr(c *gin.Context) {
 	req := &pb.OcrRequest{ImageData: imageBytes}
 	resp, err := client.PerformOcr(ctx, req)
 	if err != nil {
-		log.Printf("Błąd podczas wywołania operacji OCR: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Nie można było wykonać operacji OCR"})
+		log.Printf("Error during OCR operation: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not perform OCR operation"})
 		return
 	}
 

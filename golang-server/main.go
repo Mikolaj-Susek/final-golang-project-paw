@@ -11,6 +11,6 @@ func main() {
 	godotenv.Load()
 	config.LoadConfig()
 	db.ConnectDatabase()
-	r := routes.SetupRouter()
-	r.Run()
+	router := routes.SetupRouter()
+	router.Run()
 }
