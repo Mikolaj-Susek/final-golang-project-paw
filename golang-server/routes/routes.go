@@ -9,6 +9,7 @@ import (
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
 
+	router.POST("/register", handlers.RegisterHandler)
 	router.POST("/login", handlers.LoginHandler)
 
 	api := router.Group("/api")
@@ -19,6 +20,7 @@ func SetupRouter() *gin.Engine {
 		api.GET("/text-readings/:id", handlers.GetTextReading)
 		api.PUT("/text-readings/:id", handlers.UpdateTextReading)
 		api.DELETE("/text-readings/:id", handlers.DeleteTextReading)
+
 		api.POST("/ocr", handlers.PerformOcr)
 	}
 
