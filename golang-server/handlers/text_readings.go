@@ -8,6 +8,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// CreateTextReading godoc
+// @Summary      Create a new text reading
+// @Description  Adds a new text reading record to the database
+// @Tags         text-readings
+// @Accept       json
+// @Produce      json
+// @Param        reading  body      models.TextReadings  true  "Text Reading to add"
+// @Success      201      {object}  models.TextReadings
+// @Failure      400      {object}  map[string]string
+// @Failure      500      {object}  map[string]string
+// @Router       /api/text-readings [post]
 func CreateTextReading(c *gin.Context) {
 	var textReading models.TextReadings
 	if err := c.ShouldBindJSON(&textReading); err != nil {

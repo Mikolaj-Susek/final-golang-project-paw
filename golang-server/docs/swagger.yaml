@@ -1,0 +1,53 @@
+basePath: /
+definitions:
+  models.TextReadings:
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server for a Go CRUD application with JWT authentication.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Golang Postgres CRUD API
+  version: "1.0"
+paths:
+  /api/text-readings:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new text reading record to the database
+      parameters:
+      - description: Text Reading to add
+        in: body
+        name: reading
+        required: true
+        schema:
+          $ref: '#/definitions/models.TextReadings'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.TextReadings'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new text reading
+      tags:
+      - text-readings
+swagger: "2.0"

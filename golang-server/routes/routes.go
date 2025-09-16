@@ -4,10 +4,16 @@ import (
 	"github.com/example/golang-postgres-crud/handlers"
 	"github.com/example/golang-postgres-crud/middleware"
 	"github.com/gin-gonic/gin"
+
+	_ "github.com/example/golang-postgres-crud/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.POST("/register", handlers.RegisterHandler)
 	router.POST("/login", handlers.LoginHandler)
