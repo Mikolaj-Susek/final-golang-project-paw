@@ -16,6 +16,17 @@ const (
 	address = "python-server:50051"
 )
 
+// PerformOcr godoc
+// @Summary      Perform OCR on an image
+// @Description  Uploads an image file and returns the extracted text using an OCR service.
+// @Tags         ocr
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        image  formData  file  true  "Image file for OCR processing"
+// @Success      200    {object}  map[string]string
+// @Failure      400    {object}  map[string]string
+// @Failure      500    {object}  map[string]string
+// @Router       /api/ocr [post]
 func PerformOcr(c *gin.Context) {
 	file, err := c.FormFile("image")
 	if err != nil {

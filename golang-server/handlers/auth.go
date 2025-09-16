@@ -11,6 +11,18 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// RegisterHandler godoc
+// @Summary      Register a new user
+// @Description  Creates a new user account with a hashed password.
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        user  body      models.User  true  "User Registration Info"
+// @Success      201   {object}  map[string]string
+// @Failure      400   {object}  map[string]string
+// @Failure      409   {object}  map[string]string
+// @Failure      500   {object}  map[string]string
+// @Router       /register [post]
 func RegisterHandler(c *gin.Context) {
 	var u models.User
 
@@ -40,6 +52,18 @@ func RegisterHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "User registered successfully"})
 }
 
+// LoginHandler godoc
+// @Summary      Logs in a user
+// @Description  Authenticates a user and returns a JWT token upon successful login.
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        user  body      models.User  true  "User Login Credentials"
+// @Success      200   {object}  map[string]string
+// @Failure      400   {object}  map[string]string
+// @Failure      401   {object}  map[string]string
+// @Failure      500   {object}  map[string]string
+// @Router       /login [post]
 func LoginHandler(c *gin.Context) {
 	var u models.User
 	var foundUser models.User

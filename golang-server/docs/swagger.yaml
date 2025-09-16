@@ -2,6 +2,8 @@ basePath: /
 definitions:
   models.TextReadings:
     type: object
+  models.User:
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -16,7 +18,57 @@ info:
   title: Golang Postgres CRUD API
   version: "1.0"
 paths:
+  /api/ocr:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Uploads an image file and returns the extracted text using an OCR
+        service.
+      parameters:
+      - description: Image file for OCR processing
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Perform OCR on an image
+      tags:
+      - ocr
   /api/text-readings:
+    get:
+      description: Retrieves a list of all text reading records from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.TextReadings'
+            type: array
+      summary: Get all text readings
+      tags:
+      - text-readings
     post:
       consumes:
       - application/json
@@ -50,4 +102,177 @@ paths:
       summary: Create a new text reading
       tags:
       - text-readings
+  /api/text-readings/{id}:
+    delete:
+      description: Removes a text reading record from the database by its ID
+      parameters:
+      - description: Text Reading ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a text reading
+      tags:
+      - text-readings
+    get:
+      description: Retrieves a text reading record based on its primary key
+      parameters:
+      - description: Text Reading ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.TextReadings'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a single text reading by ID
+      tags:
+      - text-readings
+    put:
+      consumes:
+      - application/json
+      description: Updates a text reading record in the database by its ID
+      parameters:
+      - description: Text Reading ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: The new data for the text reading
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.TextReadings'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.TextReadings'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update an existing text reading
+      tags:
+      - text-readings
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user and returns a JWT token upon successful login.
+      parameters:
+      - description: User Login Credentials
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Logs in a user
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user account with a hashed password.
+      parameters:
+      - description: User Registration Info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register a new user
+      tags:
+      - auth
 swagger: "2.0"
