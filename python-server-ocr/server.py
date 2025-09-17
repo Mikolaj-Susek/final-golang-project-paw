@@ -12,24 +12,24 @@ class OcrServiceImpl(ocr_pb2_grpc.OcrServiceServicer):
         try:
             self.reader = easyocr.Reader(['pl', 'en'], gpu=False)
         except Exception as e:
-            logging.error(f"Nie udało się zainicjalizować EasyOCR: {e}")
+            logging.error(f"Failed to initialize EasyOCR: {e}")
             raise
 
     def PerformOcr(self, request, context):
         try:
-            logging.info("Otrzymano nowe żądanie OCR.")
+            logging.info("Received new OCR request.")
             image_bytes = request.image_data
 
             result = self.reader.readtext(image_bytes, paragraph=True)
 
             extracted_text = "\n".join([item[1] for item in result])
 
-            logging.info(f"Operacja OCR zakończona pomyślnie. Długość tekstu: {len(extracted_text)} znaków.")
+            logging.info(f"OCR operation completed successfully. Text length: {len(extracted_text)} characters.")
 
             return ocr_pb2.OcrResponse(extracted_text=extracted_text)
 
         except Exception as e:
-            error_message = f"Wystąpił nieoczekiwany błąd podczas przetwarzania OCR: {e}"
+            error_message = f"An unexpected error occurred during OCR processing: {e}"
             logging.error(error_message)
             context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details(error_message)
@@ -42,11 +42,12 @@ def serve():
 
     server.add_insecure_port('[::]:50051')
 
-    logging.info("Uruchamianie serwera na porcie 50051...")
+    logging.info("Starting server on port 50051...")
     server.start()
-    logging.info("Serwer został uruchomiony i czeka na połączenia.")
+    logging.info("Server has started and is waiting for connections.")
 
     server.wait_for_termination()
 
 if __name__ == '__main__':
     serve()
+    

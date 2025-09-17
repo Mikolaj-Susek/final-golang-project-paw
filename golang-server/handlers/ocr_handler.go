@@ -1,19 +1,11 @@
 package handlers
 
 import (
-	"context"
 	"log"
 	"net/http"
-	"time"
 
-	pb "github.com/example/golang-postgres-crud/ocr"
+	ocr "github.com/example/golang-postgres-crud/ocr_service"
 	"github.com/gin-gonic/gin"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-)
-
-const (
-	address = "python-server:50051"
 )
 
 // PerformOcr godoc
@@ -48,26 +40,19 @@ func PerformOcr(c *gin.Context) {
 		return
 	}
 
-	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	ocrService, err := ocr.NewOcrService()
 	if err != nil {
 		log.Printf("Error connecting to gRPC server: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not connect to OCR server"})
 		return
 	}
-	defer conn.Close()
+	defer ocrService.Close()
 
-	client := pb.NewOcrServiceClient(conn)
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
-	defer cancel()
-
-	req := &pb.OcrRequest{ImageData: imageBytes}
-	resp, err := client.PerformOcr(ctx, req)
+	extractedText, err := ocrService.PerformOcr(imageBytes)
 	if err != nil {
-		log.Printf("Error during OCR operation: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not perform OCR operation"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"extracted_text": resp.GetExtractedText()})
+	c.JSON(http.StatusOK, gin.H{"extracted_text": extractedText})
 }
