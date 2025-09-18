@@ -18,6 +18,8 @@ func SetupRouter() *gin.Engine {
 	router.POST("/register", handlers.RegisterHandler)
 	router.POST("/login", handlers.LoginHandler)
 
+	router.GET("/ws/text-readings", handlers.TextReadingWebSocketHandler)
+
 	api := router.Group("/api")
 	api.Use(middleware.AuthMiddleware())
 	{
@@ -26,7 +28,7 @@ func SetupRouter() *gin.Engine {
 		api.GET("/text-readings/:id", handlers.GetTextReading)
 		api.PUT("/text-readings/:id", handlers.UpdateTextReading)
 		api.DELETE("/text-readings/:id", handlers.DeleteTextReading)
-
+		api.GET("/text-readings/:id/image", handlers.GetTextReadingImage)
 		api.POST("/ocr", handlers.PerformOcr)
 	}
 

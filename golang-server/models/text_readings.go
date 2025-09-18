@@ -6,6 +6,7 @@ import (
 
 type TextReadings struct {
 	gorm.Model
-	OcrText  string `json:"ocrText"`
+	FileSize int64  `json:"fileSize"`
 	FilePath string `json:"filePath"`
+	OcrText  string `json:"ocrText"`
 }
